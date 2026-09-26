@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GORIORIO Security</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    min-height:100vh;
+    overflow-x:hidden;
+    font-family:Consolas,monospace;
+    color:#dff5ff;
+    background:#01060b;
+}
+
+/* GRID BACKGROUND */
+
+body:before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.18;
+    background-image:
+        linear-gradient(#087cff22 1px,transparent 1px),
+        linear-gradient(90deg,#087cff22 1px,transparent 1px);
+    background-size:45px 45px;
+}
+
+body:after{
+    content:"";
+    position:fixed;
+    width:500px;
+    height:500px;
+    left:50%;
+    top:-250px;
+    transform:translateX(-50%);
+    border-radius:50%;
+    background:#008cff;
+    filter:blur(150px);
+    opacity:.12;
+    pointer-events:none;
+}
+
+/* HEADER */
+
+header{
+    width:min(1050px,92%);
+    margin:25px auto 0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.brand{
+    color:#00a3ff;
+    font-weight:900;
+    font-size:19px;
+    letter-spacing:5px;
+    text-shadow:0 0 20px #008cff66;
+}
+
+.version{
+    color:#496a83;
+    font-size:10px;
+}
+
+/* MAIN */
+
+main{
+    width:min(850px,92%);
+    margin:auto;
+    padding:70px 0;
+}
+
+.heading{
+    text-align:center;
+}
+
+.heading .mini{
+    color:#008fff;
+    font-size:10px;
+    letter-spacing:4px;
+    margin-bottom:18px;
+}
+
+.heading h1{
+    font-size:50px;
+    letter-spacing:3px;
+}
+
+.heading h1 span{
+    color:#009dff;
+    text-shadow:
+        0 0 10px #008cff,
+        0 0 35px #008cff55;
+}
+
+.heading p{
+    color:#55748b;
+    font-size:12px;
+    margin-top:15px;
+}
+
+/* CORE */
+
+.core{
+    margin-top:45px;
+    border:1px solid #075a91;
+    background:#020c14dd;
+    box-shadow:
+        0 0 60px #007cff0d,
+        inset 0 0 60px #007cff05;
+    padding:30px;
+    position:relative;
+}
+
+.core:before,
+.core:after{
+    content:"";
+    position:absolute;
+    width:18px;
+    height:18px;
+}
+
+.core:before{
+    left:-1px;
+    top:-1px;
+    border-left:2px solid #00a3ff;
+    border-top:2px solid #00a3ff;
+}
+
+.core:after{
+    right:-1px;
+    bottom:-1px;
+    border-right:2px solid #00a3ff;
+    border-bottom:2px solid #00a3ff;
+}
+
+/* DROP */
+
+.drop{
+    min-height:260px;
+    border:1px dashed #126b9e;
+    background:
+        linear-gradient(135deg,#03141f,#020b13);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.drop:hover{
+    border-color:#00a3ff;
+    box-shadow:inset 0 0 45px #008cff0c;
+}
+
+.hex{
+    width:85px;
+    height:85px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #008fff;
+    background:#03233a;
+    color:#00a3ff;
+    font-size:32px;
+    clip-path:polygon(
+        25% 6%,
+        75% 6%,
+        100% 50%,
+        75% 94%,
+        25% 94%,
+        0 50%
+    );
+    box-shadow:0 0 35px #008cff22;
+}
+
+.drop h2{
+    margin-top:20px;
+    font-size:15px;
+    letter-spacing:2px;
+}
+
+.drop p{
+    margin-top:8px;
+    color:#496b82;
+    font-size:10px;
+}
+
+#file{
+    display:none;
+}
+
+.file-selected{
+    color:#00a3ff!important;
+}
+
+/* BUTTON */
+
+.scan{
+    width:100%;
+    border:1px solid #008fff;
+    background:#021522;
+    color:#00a3ff;
+    padding:17px;
+    margin-top:15px;
+    font-family:inherit;
+    font-weight:bold;
+    letter-spacing:2px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.scan:hover{
+    color:white;
+    background:#007ee8;
+    box-shadow:0 0 30px #008cff55;
+}
+
+.scan:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+}
+
+/* TERMINAL */
+
+.terminal{
+    display:none;
+    margin-top:25px;
+    border:1px solid #103e5a;
+    background:#01070c;
+}
+
+.terminal.show{
+    display:block;
+}
+
+.terminal-head{
+    padding:11px 14px;
+    border-bottom:1px solid #103e5a;
+    color:#45677d;
+    font-size:10px;
+}
+
+.terminal-body{
+    padding:18px;
+    min-height:170px;
+    font-size:11px;
+    line-height:2;
+}
+
+.line{
+    color:#47738e;
+}
+
+.line span{
+    color:#00a3ff;
+}
+
+.success{
+    color:#12db8a;
+}
+
+.warning{
+    color:#ffc238;
+}
+
+.danger{
+    color:#ff5260;
+}
+
+/* RESULT */
+
+.result{
+    display:none;
+    margin-top:20px;
+    border:1px solid #0d4261;
+    padding:20px;
+    background:#020a11;
+}
+
+.result.show{
+    display:block;
+}
+
+.result-status{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    margin-bottom:20px;
+}
+
+.status-light{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:#12db8a;
+    box-shadow:0 0 15px #12db8a;
+}
+
+.status-name{
+    font-size:17px;
+    font-weight:bold;
+}
+
+.status-sub{
+    display:block;
+    color:#4d7087;
+    font-size:10px;
+    margin-top:4px;
+}
+
+.data{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.data-item{
+    border:1px solid #0c2c40;
+    padding:13px;
+    background:#031019;
+}
+
+.data-item small{
+    display:block;
+    color:#42647a;
+    font-size:9px;
+    margin-bottom:6px;
+}
+
+.data-item b{
+    font-size:11px;
+    word-break:break-all;
+}
+
+.green{
+    color:#12db8a;
+}
+
+.yellow{
+    color:#ffc238;
+}
+
+.red{
+    color:#ff5260;
+}
+
+/* FOOTER */
+
+footer{
+    text-align:center;
+    color:#29465a;
+    font-size:9px;
+    letter-spacing:1px;
+    padding-bottom:25px;
+}
+
+footer span{
+    color:#008fff;
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+    main{
+        padding:50px 0;
+    }
+
+    .heading h1{
+        font-size:34px;
+    }
+
+    .core{
+        padding:15px;
+    }
+
+    .drop{
+        min-height:220px;
+    }
+
+    .data{
+        grid-template-columns:1fr;
+    }
+
+    header{
+        margin-top:18px;
+    }
+
+    .brand{
+        font-size:15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="brand">
+        GORIORIO
+    </div>
+
+    <div class="version">
+        SECURITY SYSTEM // v1.0
+    </div>
+
+</header>
+
+
+<main>
+
+    <section class="heading">
+
+        <div class="mini">
+            GTA SA-MP SECURITY
+        </div>
+
+        <h1>
+            <span>KEYLOGGER</span><br>
+            DETECTOR
+        </h1>
+
+        <p>
+            Advanced file inspection interface
+        </p>
+
+    </section>
+
+
+    <section class="core">
+
+        <label class="drop" for="file">
+
+            <div>
+
+                <div class="hex">
+                    ⬡
+                </div>
+
+                <h2 id="fileTitle">
+                    DROP FILE HERE
+                </h2>
+
+                <p id="fileSub">
+                    SELECT GTA SA-MP FILE TO ANALYZE
+                </p>
+
+            </div>
+
+        </label>
+
+        <input
+            type="file"
+            id="file"
+            accept=".asi,.dll,.exe,.cs,.lua,.sf,.zip"
+        >
+
+
+        <button
+            class="scan"
+            id="scanBtn"
+            onclick="startScan()"
+        >
+            [ START SECURITY SCAN ]
+        </button>
+
+
+        <div
+            class="terminal"
+            id="terminal"
+        >
+
+            <div class="terminal-head">
+                GORIORIO // ANALYSIS TERMINAL
+            </div>
+
+            <div
+                class="terminal-body"
+                id="terminalBody"
+            ></div>
+
+        </div>
+
+
+        <div
+            class="result"
+            id="result"
+        >
+
+            <div class="result-status">
+
+                <div
+                    class="status-light"
+                    id="statusLight"
+                ></div>
+
+                <div>
+
+                    <div
+                        class="status-name"
+                        id="statusName"
+                    >
+                        SYSTEM SECURE
+                    </div>
+
+                    <span
+                        class="status-sub"
+                        id="statusSub"
+                    >
+                        No suspicious indicator detected
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="data">
+
+                <div class="data-item">
+
+                    <small>FILE</small>
+
+                    <b id="resultFile">-</b>
+
+                </div>
+
+
+                <div class="data-item">
+
+                    <small>SIZE</small>
+
+                    <b id="resultSize">-</b>
+
+                </div>
+
+
+                <div class="data-item">
+
+                    <small>KEYLOGGER</small>
+
+                    <b
+                        id="keylogger"
+                        class="green"
+                    >
+                        NOT DETECTED
+                    </b>
+
+                </div>
+
+
+                <div class="data-item">
+
+                    <small>SUSPICIOUS INDICATOR</small>
+
+                    <b
+                        id="indicator"
+                        class="green"
+                    >
+                        0
+                    </b>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    GORIORIO <span>//</span> GTA SA-MP SECURITY
+</footer>
+
+
+<script>
+
+const file =
+document.getElementById("file");
+
+const fileTitle =
+document.getElementById("fileTitle");
+
+const fileSub =
+document.getElementById("fileSub");
+
+const scanBtn =
+document.getElementById("scanBtn");
+
+const terminal =
+document.getElementById("terminal");
+
+const terminalBody =
+document.getElementById("terminalBody");
+
+const result =
+document.getElementById("result");
+
+
+let selectedFile = null;
+
+
+file.addEventListener("change",function(){
+
+    if(!this.files.length)
+        return;
+
+    selectedFile=this.files[0];
+
+    fileTitle.textContent=
+        selectedFile.name;
+
+    fileTitle.classList.add(
+        "file-selected"
+    );
+
+    fileSub.textContent=
+        "FILE READY FOR ANALYSIS";
+
+});
+
+
+function formatSize(bytes){
+
+    if(bytes<1024)
+        return bytes+" B";
+
+    if(bytes<1024*1024)
+        return (
+            bytes/1024
+        ).toFixed(1)+" KB";
+
+    return (
+        bytes/1024/1024
+    ).toFixed(2)+" MB";
+
+}
+
+
+function startScan(){
+
+    if(!selectedFile){
+
+        alert(
+            "SELECT FILE FIRST"
+        );
+
+        return;
+
+    }
+
+
+    scanBtn.disabled=true;
+
+    scanBtn.textContent=
+        "[ SCANNING... ]";
+
+    result.classList.remove("show");
+
+    terminal.classList.add("show");
+
+
+    const lines=[
+
+        "Initializing GORIORIO security engine...",
+        "Reading file structure...",
+        "Checking suspicious indicators...",
+        "Checking keyboard activity patterns...",
+        "Checking clipboard access...",
+        "Checking injection indicators...",
+        "Finalizing analysis..."
+
+    ];
+
+
+    terminalBody.innerHTML="";
+
+
+    let i=0;
+
+
+    function nextLine(){
+
+        if(i>=lines.length){
+
+            finishScan();
+
+            return;
+
+        }
+
+
+        const div=
+            document.createElement("div");
+
+        div.className="line";
+
+        div.innerHTML=
+            '<span>[+]</span> '+
+            lines[i];
+
+        terminalBody.appendChild(div);
+
+        i++;
+
+        setTimeout(
+            nextLine,
+            350
+        );
+
+    }
+
+
+    nextLine();
+
+}
+
+
+function finishScan(){
+
+    const name=
+        selectedFile.name.toLowerCase();
+
+
+    const suspiciousWords=[
+
+        "keylog",
+        "keylogger",
+        "stealer",
+        "grabber",
+        "logger",
+        "inject",
+        "injector",
+        "rat",
+        "password",
+        "token"
+
+    ];
+
+
+    let found=[];
+
+
+    suspiciousWords.forEach(
+        word=>{
+
+            if(name.includes(word))
+                found.push(word);
+
+        }
+    );
+
+
+    document.getElementById(
+        "resultFile"
+    ).textContent=
+        selectedFile.name;
+
+
+    document.getElementById(
+        "resultSize"
+    ).textContent=
+        formatSize(selectedFile.size);
+
+
+    const light=
+        document.getElementById(
+            "statusLight"
+        );
+
+    const status=
+        document.getElementById(
+            "statusName"
+        );
+
+    const sub=
+        document.getElementById(
+            "statusSub"
+        );
+
+    const keylogger=
+        document.getElementById(
+            "keylogger"
+        );
+
+    const indicator=
+        document.getElementById(
+            "indicator"
+        );
+
+
+    if(found.length){
+
+        status.textContent=
+            "SUSPICIOUS FILE";
+
+        status.className=
+            "status-name yellow";
+
+        sub.textContent=
+            "Suspicious indicator detected";
+
+        light.style.background=
+            "#ffc238";
+
+        light.style.boxShadow=
+            "0 0 15px #ffc238";
+
+        keylogger.textContent=
+            "POTENTIAL";
+
+        keylogger.className=
+            "yellow";
+
+        indicator.textContent=
+            found.length;
+
+        indicator.className=
+            "yellow";
+
+
+        terminalBody.innerHTML+=
+        '<div class="warning">[!] Suspicious indicator detected.</div>';
+
+    }else{
+
+        status.textContent=
+            "SYSTEM SECURE";
+
+        status.className=
+            "status-name green";
+
+        sub.textContent=
+            "No suspicious indicator detected";
+
+        light.style.background=
+            "#12db8a";
+
+        light.style.boxShadow=
+            "0 0 15px #12db8a";
+
+        keylogger.textContent=
+            "NOT DETECTED";
+
+        keylogger.className=
+            "green";
+
+        indicator.textContent=
+            "0";
+
+        indicator.className=
+            "green";
+
+
+        terminalBody.innerHTML+=
+        '<div class="success">[✓] Analysis completed successfully.</div>';
+
+    }
+
+
+    result.classList.add("show");
+
+    scanBtn.disabled=false;
+
+    scanBtn.textContent=
+        "[ START SECURITY SCAN ]";
+
+}
+
+</script>
+
+</body>
+</html>
